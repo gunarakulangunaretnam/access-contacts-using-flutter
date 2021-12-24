@@ -1,8 +1,25 @@
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+Map<String, Color> contactsColorMap = new Map();
+TextEditingController contactSearchController = new TextEditingController();
+
+List<Contact> contacts = [];
+List<Contact> contactsFiltered = [];
+final Color fontColor = Color(0xff07B1A1);
+final Color buttonColor =
+Color(0xff04D3A8); // Define a color for button gradient
+final Color primaryColor =
+Color(0xff04D3A8); // Define a color for button gradient
+final Color secondaryColor =
+Color(0xff00B7B2); // Define a color for button gradient
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -13,15 +30,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -63,53 +71,388 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
+    return contactScreen();
+
+  }
+
+  Widget contactScreen() {
+
+    bool isSearching = contactSearchController.text.isNotEmpty;
+    bool listItemsExist = (contactsFiltered.length > 0 || contacts.length > 0);
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        backgroundColor: Color(0xffF3F0E6),
+        elevation: 0,
+        leading: TextButton(
+          onPressed: () {
+
+          },
+          child: const Text(
+            "<<",
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontSize: 22.0,
+              color: Color(0xff595959),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () => {
+
+              },
+              icon: Icon(
+                Icons.search,
+                color: Colors.black.withOpacity(0.65),
+                size: 36,
+              )),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      //Scaffold widget will expand or occupy the whole device screen.
+      body: Container(
+        //Add gradient to background
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xffF3F0E6), Color(0xffFFFFFF)])),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  MediaQuery.of(context).size.width * 0.05,
+                  0,
+                  MediaQuery.of(context).size.width * 0.05,
+                  0),
+              child: Text(
+                "Invite tribe members to\nyour social gathering",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff595959)),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.025,
             ),
+            Container(
+              height: MediaQuery.of(context).size.height -
+                  kToolbarHeight -
+                  MediaQuery.of(context).size.height * 0.25,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(10)),
+                              color: Color(0xffffffff),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  color: Color(0xffC4C4C4),
+                                  spreadRadius: 0,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: TextEditingController()
+                                      ..text = "      " + deepLink,
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xff04D3A8)),
+                                  ),
+                                ),
+                                Text(
+                                  "copy",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff595959)),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.content_copy,
+                                      color: Color(0xff595959)),
+                                  onPressed: () async {
+
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.0125),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(
+                            "Or share now",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xff07B1A1)),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.025,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.height * 0.05,
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(34)),
+                              gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [secondaryColor, primaryColor]),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  color: Color(0xff69B0AE),
+                                  spreadRadius: 0,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.share,
+                                color: Color(0xffffffff),
+                              ),
+                              onPressed: () async {
+                                Share.share(deepLink);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.0125),
+                    listItemsExist == true
+                        ? isSearching == true && contactsFiltered.length == 0
+                        ? Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width *
+                              0.10),
+                    )
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: isSearching == true
+                          ? contactsFiltered.length
+                          : contacts.length,
+                      itemBuilder: (context, index) {
+                        Contact contact = isSearching == true
+                            ? contactsFiltered[index]
+                            : contacts[index];
+
+                        var baseColor =
+                        contactsColorMap[contact.displayName]
+                        as dynamic;
+
+                        Color color1 = baseColor;
+                        Color color2 = baseColor;
+                        return ListTile(
+                          visualDensity: VisualDensity(
+                              horizontal: 0, vertical: -4),
+                          title: Text(contact.displayName.toString()),
+                          subtitle: Text(contact.phones!.length > 0
+                              ? contact.phones!
+                              .elementAt(0)
+                              .value
+                              .toString()
+                              : ''),
+                          leading: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        color1,
+                                        color2,
+                                      ],
+                                      begin: Alignment.bottomLeft,
+                                      end: Alignment.topRight)),
+                              child: CircleAvatar(
+                                  child: Text(contact.initials(),
+                                      style: TextStyle(
+                                          color: Colors.white)),
+                                  backgroundColor:
+                                  Colors.transparent)),
+                          trailing: InkWell(
+                            onTap: () {
+                              // Main Contact
+
+                              var currentNumber = contact.phones!
+                                  .elementAt(0)
+                                  .value
+                                  .toString()
+                                  .replaceAll(' ', '');
+                              var userDocumentID =
+                              alreadyRegisteredUsersList[
+                              currentNumber];
+
+                              if (addedParticipantsList.contains(
+                                  userDocumentID.toString() +
+                                      " = [PENDING]")) {
+                                setState(() {
+                                  addedParticipantsList.remove(
+                                      userDocumentID.toString() +
+                                          " = [PENDING]");
+                                });
+                              } else {
+                                if (alreadyRegisteredUsersList
+                                    .containsValue(userDocumentID)) {
+                                  setState(() {
+                                    addedParticipantsList.add(
+                                        userDocumentID.toString() +
+                                            " = [PENDING]");
+                                  });
+                                } else {
+                                  String currentPhoneNumber = contact
+                                      .phones!
+                                      .elementAt(0)
+                                      .value
+                                      .toString()
+                                      .replaceAll(' ', '');
+
+                                  setState(() {
+                                    if (invitedViaSMSParticipantsList
+                                        .contains(
+                                        currentPhoneNumber)) {
+                                      invitedViaSMSParticipantsList
+                                          .remove(currentPhoneNumber);
+                                    } else {
+                                      invitedViaSMSParticipantsList
+                                          .add(currentPhoneNumber);
+                                    }
+                                  });
+
+                                  _sendSMS(
+                                      "Hey, join my social event on SingSing $deepLink",
+                                      currentNumber);
+                                }
+                              }
+                            },
+                            child: inviteButtonStateFunction(contact
+                                .phones!
+                                .elementAt(0)
+                                .value
+                                .toString()
+                                .replaceAll(' ', '')),
+                          ),
+                        );
+                      },
+                    )
+                        : isGetAllContactsExecuted == false
+                        ? Center(
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.width *
+                                  0.10),
+                          child: SpinKitFadingCircle(
+                            color: Colors.black,
+                          )),
+                    )
+                        : Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.width *
+                                0.10),
+                        child: Column(
+                          children: [
+                            Text('No contacts found',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6),
+                            Icon(
+                              Icons.warning_amber,
+                              size:
+                              MediaQuery.of(context).size.width *
+                                  0.30,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: 50,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(34)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                spreadRadius: 0,
+                blurRadius: 2,
+                offset: Offset(0, 4),
+              ),
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [secondaryColor, primaryColor])),
+        child: TextButton(
+          // If the done button is clicked, do the following things.
+          onPressed: () {
+            getNextFriday(); // Run the getNextFriday function to assign default value automatically.
+
+            setState(() {
+              screenState = "DateChosenScreen";
+            });
+          },
+          child: Text(
+            'NEXT',
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ),
+      ),
+      bottomSheet: Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height * 0.05)),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
