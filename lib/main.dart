@@ -1,6 +1,7 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,6 +10,7 @@ void main() {
 Map<String, Color> contactsColorMap = new Map();
 TextEditingController contactSearchController = new TextEditingController();
 bool isGetAllContactsExecuted = false;
+final Map<String, String> alreadyRegisteredUsersList = {};
 
 List<Contact> contacts = [];
 List<Contact> contactsFiltered = [];
@@ -19,7 +21,6 @@ final Color primaryColor =
 Color(0xff04D3A8); // Define a color for button gradient
 final Color secondaryColor =
 Color(0xff00B7B2); // Define a color for button gradient
-
 
 
 class MyApp extends StatelessWidget {
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -57,21 +59,63 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
+  getAllContacts() async {
+    List colors = [Colors.green, Colors.indigo, Colors.yellow, Colors.orange];
+    int colorIndex = 0;
+    List<Contact> _contacts = (await ContactsService.getContacts()).toList();
+
+    List<Contact> registeredUserContacts = [];
+    List<Contact> nonRegisteredUserContacts = [];
+
+    _contacts.forEach((contact) {
+      if (contact.phones!.isNotEmpty) {
+        if (alreadyRegisteredUsersList.containsKey(contact.phones!
+            .elementAt(0)
+            .value
+            .toString()
+            .replaceAll(' ', ''))) {
+          registeredUserContacts.add(contact);
+        } else {
+          nonRegisteredUserContacts.add(contact);
+        }
+      }
+
+      Color baseColor = colors[colorIndex];
+      contactsColorMap[contact.displayName.toString()] = baseColor;
+      colorIndex++;
+      if (colorIndex == colors.length) {
+        colorIndex = 0;
+      }
+    });
+
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      contacts = registeredUserContacts + nonRegisteredUserContacts;
+      isGetAllContactsExecuted = true;
     });
   }
 
+
+  getPermissions() async {
+    var status = await Permission.contacts.status;
+    if (status.isGranted) {
+
+      getAllContacts();
+    }
+  }
+
+
   @override
+  void initState() {
+
+    getPermissions();
+    super.initState();
+  }
+
+
+
   Widget build(BuildContext context) {
+
 
     return contactScreen();
 
@@ -175,7 +219,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: Colors.white)),
                                   backgroundColor:
                                   Colors.transparent)),
-                          trailing: const Text("Hai")
+                          trailing: TextButton(
+                            onPressed: () {
+                              // Respond to button press
+                            },
+                            child: Text("Invite"),
+                          )
                         );
                       },
                     )

@@ -31,4 +31,14 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+
+    <!-- START Contact Access contacts_service -->
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+
+    <!-- START Contact Access contacts_service -->
+
 </manifest>
