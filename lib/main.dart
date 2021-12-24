@@ -8,6 +8,7 @@ void main() {
 
 Map<String, Color> contactsColorMap = new Map();
 TextEditingController contactSearchController = new TextEditingController();
+bool isGetAllContactsExecuted = false;
 
 List<Contact> contacts = [];
 List<Contact> contactsFiltered = [];
@@ -157,55 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           left: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10)),
-                              color: Color(0xffffffff),
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: Color(0xffC4C4C4),
-                                  spreadRadius: 0,
-                                  blurRadius: 2,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: TextEditingController()
-                                      ..text = "      " + deepLink,
-                                    readOnly: true,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color(0xff04D3A8)),
-                                  ),
-                                ),
-                                Text(
-                                  "copy",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xff595959)),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.content_copy,
-                                      color: Color(0xff595959)),
-                                  onPressed: () async {
 
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -255,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: Color(0xffffffff),
                               ),
                               onPressed: () async {
-                                Share.share(deepLink);
+
                               },
                             ),
                           ),
@@ -314,68 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: Colors.white)),
                                   backgroundColor:
                                   Colors.transparent)),
-                          trailing: InkWell(
-                            onTap: () {
-                              // Main Contact
-
-                              var currentNumber = contact.phones!
-                                  .elementAt(0)
-                                  .value
-                                  .toString()
-                                  .replaceAll(' ', '');
-                              var userDocumentID =
-                              alreadyRegisteredUsersList[
-                              currentNumber];
-
-                              if (addedParticipantsList.contains(
-                                  userDocumentID.toString() +
-                                      " = [PENDING]")) {
-                                setState(() {
-                                  addedParticipantsList.remove(
-                                      userDocumentID.toString() +
-                                          " = [PENDING]");
-                                });
-                              } else {
-                                if (alreadyRegisteredUsersList
-                                    .containsValue(userDocumentID)) {
-                                  setState(() {
-                                    addedParticipantsList.add(
-                                        userDocumentID.toString() +
-                                            " = [PENDING]");
-                                  });
-                                } else {
-                                  String currentPhoneNumber = contact
-                                      .phones!
-                                      .elementAt(0)
-                                      .value
-                                      .toString()
-                                      .replaceAll(' ', '');
-
-                                  setState(() {
-                                    if (invitedViaSMSParticipantsList
-                                        .contains(
-                                        currentPhoneNumber)) {
-                                      invitedViaSMSParticipantsList
-                                          .remove(currentPhoneNumber);
-                                    } else {
-                                      invitedViaSMSParticipantsList
-                                          .add(currentPhoneNumber);
-                                    }
-                                  });
-
-                                  _sendSMS(
-                                      "Hey, join my social event on SingSing $deepLink",
-                                      currentNumber);
-                                }
-                              }
-                            },
-                            child: inviteButtonStateFunction(contact
-                                .phones!
-                                .elementAt(0)
-                                .value
-                                .toString()
-                                .replaceAll(' ', '')),
-                          ),
+                          trailing: const Text("Hai")
                         );
                       },
                     )
@@ -385,9 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.width *
                                   0.10),
-                          child: SpinKitFadingCircle(
-                            color: Colors.black,
-                          )),
+                          child: const Text("Loading...")),
                     )
                         : Center(
                       child: Padding(
@@ -437,11 +327,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: TextButton(
           // If the done button is clicked, do the following things.
           onPressed: () {
-            getNextFriday(); // Run the getNextFriday function to assign default value automatically.
 
-            setState(() {
-              screenState = "DateChosenScreen";
-            });
           },
           child: Text(
             'NEXT',
