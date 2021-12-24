@@ -87,31 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Color(0xffF3F0E6),
         elevation: 0,
-        leading: TextButton(
-          onPressed: () {
-
-          },
-          child: const Text(
-            "<<",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: 22.0,
-              color: Color(0xff595959),
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () => {
-
-              },
-              icon: Icon(
-                Icons.search,
-                color: Colors.black.withOpacity(0.65),
-                size: 36,
-              )),
-        ],
       ),
       //Scaffold widget will expand or occupy the whole device screen.
       body: Container(
@@ -127,21 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  MediaQuery.of(context).size.width * 0.05,
-                  0,
-                  MediaQuery.of(context).size.width * 0.05,
-                  0),
-              child: Text(
-                "Invite tribe members to\nyour social gathering",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.03,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xff595959)),
-              ),
-            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.025,
             ),
@@ -162,59 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.0125),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * 0.05),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text(
-                            "Or share now",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xff07B1A1)),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.025,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.height * 0.05,
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(34)),
-                              gradient: LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: [secondaryColor, primaryColor]),
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: Color(0xff69B0AE),
-                                  spreadRadius: 0,
-                                  blurRadius: 2,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.share,
-                                color: Color(0xffffffff),
-                              ),
-                              onPressed: () async {
 
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.0125),
                     listItemsExist == true
@@ -305,34 +213,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             )
           ],
-        ),
-      ),
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: 50,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(34)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                spreadRadius: 0,
-                blurRadius: 2,
-                offset: Offset(0, 4),
-              ),
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [secondaryColor, primaryColor])),
-        child: TextButton(
-          // If the done button is clicked, do the following things.
-          onPressed: () {
-
-          },
-          child: Text(
-            'NEXT',
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
         ),
       ),
       bottomSheet: Padding(
