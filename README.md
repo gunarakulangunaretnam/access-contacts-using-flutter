@@ -1,8 +1,8 @@
-# CONTACTS PROTOTYPE FLUTTER
+# Contacts Prototype Flutter
 
 ## Introduction
 
-A simple contact access sample project in Flutter, accessing the contacts in mobile phone could be a tricky part, this prototype could be used as a boilerplate code to achieve this task easily.
+It is a simple contact access sample project in Flutter, accessing the contacts in a mobile phone could be tricky; this prototype could be used as a boilerplate code to achieve this task easily.
 
 ## Technology & Frameworks
 - Flutter 2.8.1
@@ -30,7 +30,7 @@ This package is used to handle permissions for contacts accesses.
 
 ![Demo](github-readme-contents/im1.jpg)
 
-# CONTACT
+# Contact
 
 ### Website: 
 
